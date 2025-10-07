@@ -1,10 +1,13 @@
 const API = "https://todoapitest.juansegaliz.com/todos";
 
-// Refs
 const msg = document.getElementById("message");
 const rows = document.getElementById("rows");
 const search = document.getElementById("search");
 const statusRadios = document.querySelectorAll('input[name="status"]');
+
+const title = document.getElementById("title");
+const description = document.getElementById("description");
+const btnAdd = document.getElementById("btnAdd");
 
 let todos = [];
 let filtered = [];
@@ -14,7 +17,6 @@ function showMsg(text, ok = true) {
   msg.className = ok ? "text-sm text-emerald-700" : "text-sm text-rose-700";
   setTimeout(() => (msg.textContent = ""), 2500);
 }
-
 async function request(method = "GET", path = "", body) {
   const res = await fetch(API + (path || ""), {
     method,
@@ -28,7 +30,7 @@ async function request(method = "GET", path = "", body) {
 function renderRows(list) {
   rows.innerHTML = "";
   if (!list.length) {
-    rows.innerHTML = `<tr><td colspan="3" class="px-5 py-4 text-sm text-slate-500">No hay tareas.</td></tr>`;
+    rows.innerHTML = `<tr><td colspan="4" class="px-5 py-4 text-sm text-slate-500">No hay tareas.</td></tr>`;
     return;
   }
   for (const t of list) {
@@ -44,9 +46,15 @@ function renderRows(list) {
           <div class="text-xs text-slate-500">${desc}</div>
         </td>
         <td class="px-5 py-3 text-sm">${done ? "✅" : "⏳"}</td>
+        <td class="px-5 py-3 text-sm">
+          <button data-id="${id}" class="btn-del text-rose-600 hover:underline">Eliminar</button>
+        </td>
       </tr>
     `);
   }
+  rows.querySelectorAll(".btn-del").forEach(btn => {
+    btn.addEventListener("click", () => removeTodo(btn.dataset.id));
+  });
 }
 
 function applyFilters() {
@@ -70,6 +78,26 @@ async function loadTodos() {
   applyFilters();
 }
 
+async function addTodo() {
+  const t = title.value.trim();
+  const d = description.value.trim();
+  if (!t) return showMsg("El título es obligatorio.", false);
+  const body = { Title: t, Description: d || "", IsCompleted: false };
+  const { ok } = await request("POST", "", body);
+  if (!ok) return showMsg("No se pudo crear.", false);
+  title.value = ""; description.value = "";
+  showMsg("Tarea creada.");
+  loadTodos();
+}
+
+async function removeTodo(id) {
+  if (!id) return;
+  const { ok } = await request("DELETE", `/${id}`);
+  showMsg(ok ? "Eliminada." : "No se pudo eliminar.", !!ok);
+  loadTodos();
+}
+
 document.addEventListener("DOMContentLoaded", loadTodos);
 search.addEventListener("input", applyFilters);
 statusRadios.forEach(r => r.addEventListener("change", applyFilters));
+btnAdd.addEventListener("click", addTodo);
