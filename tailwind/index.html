@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Todos - Tailwind (Base)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <main class="max-w-5xl mx-auto p-6 space-y-6">
+    <header class="flex items-end justify-between">
+      <h1 class="text-2xl font-semibold">Todos (Base)</h1>
+      <div id="message" class="text-sm text-emerald-700"></div>
+    </header>
+
+    <!-- Filtros básicos -->
+    <section class="bg-white rounded-xl border border-slate-200 p-4 flex flex-col md:flex-row gap-3 md:items-center">
+      <input id="search" type="text" placeholder="Buscar por título o descripción..." class="w-full md:flex-1 rounded-lg border-slate-300 focus:border-slate-600 focus:ring-0 px-3 py-2">
+      <div class="flex gap-3 text-sm">
+        <label class="inline-flex items-center gap-1"><input type="radio" name="status" value="all" checked>Todos</label>
+        <label class="inline-flex items-center gap-1"><input type="radio" name="status" value="open">Activos</label>
+        <label class="inline-flex items-center gap-1"><input type="radio" name="status" value="done">Completados</label>
+      </div>
+    </section>
+
+    <!-- Tabla -->
+    <section class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <table class="w-full">
+        <thead class="bg-slate-100 text-left">
+          <tr>
+            <th class="px-5 py-3 text-sm">ID</th>
+            <th class="px-5 py-3 text-sm">Tarea</th>
+            <th class="px-5 py-3 text-sm">Estado</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="./index.js"></script>
+</body>
+</html>
