@@ -1,0 +1,7 @@
+services:
+  tailwind:
+    image: waldoocreator/todos-tailwind:latest
+    container_name: todos-tailwind
+    ports:
+      - "8080:80"
+    restart: unless-stopped
